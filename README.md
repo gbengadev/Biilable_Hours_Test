@@ -2,9 +2,9 @@
 API TESTS
 ------------
 
-Prerequisites
+Prerequisites<br />
 -----------
-Install nodejs
+Install nodejs<br />
 install newman
 install htmlextra reporter
 
