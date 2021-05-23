@@ -1,4 +1,8 @@
 # Biilable_Hours_Test
+Billable Hours test framework is designed with a few frameworks and tools which are:<br />
+Appium with Java, Maven and TestNG for UI automations<br />
+Postman with Newman runner for API test automations<br />
+
 API TESTS
 ------------
 
