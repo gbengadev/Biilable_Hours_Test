@@ -1,0 +1,645 @@
+{
+	"info": {
+		"_postman_id": "c2358857-60dd-4379-8d7c-0a7b6b2bc0fc",
+		"name": "Billable_Hours_API_Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Parse CSV Files",
+			"item": [
+				{
+					"name": "Parse CSV file content",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Retrieve response body\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Check the status code when a valid base64 file is submitted\", function () {\r",
+									"    pm.response.to.have.status(200);   \r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check that response time is less than 10000ms\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(10000);\r",
+									"    });\r",
+									"\r",
+									"pm.test(\"Check that response body contains company data\", function (){\r",
+									"pm.expect(jsonData.id).exist;\r",
+									"pm.expect(jsonData.companies.Google).to.eql(2400);\r",
+									"pm.expect(jsonData.companies.Facebook).to.eql(500);\r",
+									"});\r",
+									"pm.collectionVariables.set(\"invoice_id\", jsonData.id);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"payload\": \"{{validbase64 file}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/invoice/parse",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoice",
+								"parse"
+							]
+						},
+						"description": "This endpoint allows you to parse the content of the CSV file encoded in Base64. The CSV file must conform to the specified format.\n\nYou can get base64 encoding of a file on the terminal:\n```bash\nbase64 /path/to/file\n```\n\nYou can also generate base64 of a file from the web using a service like https://www.browserling.com/tools/file-to-base64\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Parse CSV file content 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.test(\"Check the status code when a valid base64 file is submitted(custom data)\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									" \r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check that the response time is less than 10000ms(custom data)\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(10000);\r",
+									"    });\r",
+									"\r",
+									"pm.test(\"Check that response body contains the custom company data\", function (){\r",
+									"pm.expect(jsonData.id).exist;\r",
+									"pm.expect(jsonData.companies.Google).to.eql(2400);\r",
+									"pm.expect(jsonData.companies.Facebook).to.eql(2000);\r",
+									"pm.expect(jsonData.companies.CBN).to.eql(2100);\r",
+									"});\r",
+									"\r",
+									"//Set invoiceId as a collection variable\r",
+									"pm.collectionVariables.set(\"invoice_id2\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"payload\": \"{{validBase64File2}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/invoice/parse",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoice",
+								"parse"
+							]
+						},
+						"description": "This endpoint allows you to parse the content of the CSV file encoded in Base64. The CSV file must conform to the specified format.\n\nYou can get base64 encoding of a file on the terminal:\n```bash\nbase64 /path/to/file\n```\n\nYou can also generate base64 of a file from the web using a service like https://www.browserling.com/tools/file-to-base64\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Parse invalid CSV file",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Retrieve response body\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Check the status code when an invalid base64 file is submitted\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"pm.test(\"Check that the response time when an invalid base64 file is submitted is less than 10000ms\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(10000);\r",
+									"    });\r",
+									"pm.test(\"Check that the response when an invalid base64 file is submitted contains the documented error\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(10000);\r",
+									"        pm.expect(jsonData.error).eql(\"Something went wrong\");\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"payload\": \"RW1wbG95ZWUgSUQsQmlsbGFibGUgUmF0ZSAocGVyIGhvdXIpLFByb2plY3QsRGF0ZSxTdGFydCBUaW1lLEVuZCBUaW1lCjEsMzAwLEdvb2dsZSwyMDE5LTA3LTAxLDA5OjAwLDE3OjAwCjIsMTAwLEZhY2Vib29rLDIwMTktMDctMDEsMTE6MDAsMTYMDA=\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/invoice/parse",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoice",
+								"parse"
+							]
+						},
+						"description": "This endpoint allows you to parse the content of the CSV file encoded in Base64. The CSV file must conform to the specified format.\n\nYou can get base64 encoding of a file on the terminal:\n```bash\nbase64 /path/to/file\n```\n\nYou can also generate base64 of a file from the web using a service like https://www.browserling.com/tools/file-to-base64\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Parse wrongly formatted CSV file",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Retrieve response body\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Check the status code when a wrongly formatted base64 file is submitted\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"pm.test(\"Check the response time when a wrongly formatted base64 file is submitted is less than 10000ms\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(10000);\r",
+									"    });\r",
+									"pm.test(\"Check that the response when a wrongly formatted base64 file is submitted contains the documented error\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(10000);\r",
+									"        pm.expect(jsonData.error).contains(\"Invalid time value detected:\");\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"payload\": \"{{wrongly formatted base64 file}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/invoice/parse",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoice",
+								"parse"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get Invoice by Id",
+			"item": [
+				{
+					"name": "Get Invoice Parsing Result by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Retrieve response body\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Check that the status code for retrieving invoice parsing result is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Check that response time for retrieving an invoice parsing result is less than 1000ms\", function () {\r",
+									"     pm.expect(pm.response.responseTime).to.be.below(10000);\r",
+									"    });\r",
+									"pm.test(\"Check that response body returned when retrieving an invoice parsing result contains company data\", function (){\r",
+									"pm.expect(jsonData.id).exist;\r",
+									"pm.expect(jsonData.companies.Google).to.eql(2400);\r",
+									"pm.expect(jsonData.companies.Facebook).to.eql(2000);\r",
+									"pm.expect(jsonData.companies.CBN).to.eql(2100);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/invoice/{{invoice_id2}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoice",
+								"{{invoice_id2}}"
+							]
+						},
+						"description": "Get the Parse Result for a previously parsed CSV invoice by specified ID. In general, this endpoint will ALWAYS return success irrespective of the ID specified.\nWhen a result with the specified ID is not found, the companies will be an empty map.\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Invoice Parsing Result by an invalid ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.test(\"Check that the status code for retrieving invoice parsing result with an invalid id is 200\", function () {\r",
+									"    pm.response.to.have.status(200);   \r",
+									"});\r",
+									"pm.test(\"Check that response time for retrieving invoice parsing result with an invalid id is less than 10000ms\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(10000);\r",
+									"    });\r",
+									"pm.test(\"Check that response body for retrieving invoice parsing result with an invalid id contains no data\", function (){\r",
+									"pm.expect(jsonData.companies).to.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/invoice/{{invalidInvoiceId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoice",
+								"{{invalidInvoiceId}}"
+							]
+						},
+						"description": "Get the Parse Result for a previously parsed CSV invoice by specified ID. In general, this endpoint will ALWAYS return success irrespective of the ID specified.\nWhen a result with the specified ID is not found, the companies will be an empty map.\n"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get Company Details",
+			"item": [
+				{
+					"name": "Get Company details from an Invoice(one employee)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Retrieve response body\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Check that the status code for retrieving a company's details using a valid company and invoice is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check that the response time for retrieving a company's details using a valid company and invoice is less than 10000ms\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(10000);\r",
+									"    });\r",
+									"\r",
+									"pm.test(\"Check that response body when retrieving a company's details using a valid company and invoice contains company data\", function (){\r",
+									"pm.expect(jsonData.name).to.eql(pm.collectionVariables.get(\"company1\"));\r",
+									"\r",
+									"//Verify the first shift details\r",
+									"pm.expect(jsonData.lineItems[0].ratePerHour).to.eql(300.00);\r",
+									"pm.expect(jsonData.lineItems[0].hoursWorked).to.eql(8);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/invoice/{{invoice_id}}/company?companyName={{company1}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoice",
+								"{{invoice_id}}",
+								"company"
+							],
+							"query": [
+								{
+									"key": "companyName",
+									"value": "{{company1}}"
+								}
+							]
+						},
+						"description": "Get the breakdown of the employees, rates and amounts billed by a company in an Invoice result using the ID.\nThis endpoint allows you to \"drill-down\" into the total amount charged by a company for a given invoice parsed.\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Company details from an Invoice (more than one employee)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Retrieve response body\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Check that the status code for retrieving a company's details using a valid company and invoice for multiple employees is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check that the response time for retrieving a company's details of multiple employees is less than 10000ms\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(10000);\r",
+									"    });\r",
+									"\r",
+									"pm.test(\"Check that response body returned when retrieving an invoice parsing result contains company data\", function (){\r",
+									"pm.expect(jsonData.name).exist;\r",
+									"\r",
+									"//Verify the first shift details\r",
+									"pm.expect(jsonData.lineItems[0].ratePerHour).to.eql(100.00);\r",
+									"pm.expect(jsonData.lineItems[0].hoursWorked).to.eql(5);\r",
+									"\r",
+									"//Verify the second shift details\r",
+									"pm.expect(jsonData.lineItems[1].ratePerHour).to.eql(100.00);\r",
+									"pm.expect(jsonData.lineItems[1].hoursWorked).to.eql(6);\r",
+									"\r",
+									"//Verify the third shift details\r",
+									"pm.expect(jsonData.lineItems[2].ratePerHour).to.eql(100.00);\r",
+									"pm.expect(jsonData.lineItems[2].hoursWorked).to.eql(3);\r",
+									"\r",
+									"//Verify the fourth shift details\r",
+									"pm.expect(jsonData.lineItems[3].ratePerHour).to.eql(100.00);\r",
+									"pm.expect(jsonData.lineItems[3].hoursWorked).to.eql(2);\r",
+									"\r",
+									"//Verify the fifth shift details\r",
+									"pm.expect(jsonData.lineItems[4].ratePerHour).to.eql(200.00);\r",
+									"pm.expect(jsonData.lineItems[4].hoursWorked).to.eql(2);\r",
+									"\r",
+									"//Check the value of totalAmount\r",
+									"pm.expect(jsonData.totalAmount).to.eql(2000.00);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/invoice/{{invoice_id2}}/company?companyName={{company2}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoice",
+								"{{invoice_id2}}",
+								"company"
+							],
+							"query": [
+								{
+									"key": "companyName",
+									"value": "{{company2}}"
+								}
+							]
+						},
+						"description": "Get the breakdown of the employees, rates and amounts billed by a company in an Invoice result using the ID.\nThis endpoint allows you to \"drill-down\" into the total amount charged by a company for a given invoice parsed.\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Company details from an Invalid company name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check that the status code for retrieving a company's details using an invalid company is 400\", function () {\r",
+									"    pm.response.to.have.status(404);  \r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check that the response time when retrieving a company's details using an invalid company is less than 10000ms\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(10000);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/invoice/{{invoice_id}}/company?companyName={{invalidCompanyName}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoice",
+								"{{invoice_id}}",
+								"company"
+							],
+							"query": [
+								{
+									"key": "companyName",
+									"value": "{{invalidCompanyName}}",
+									"description": "(Required) companyName"
+								}
+							]
+						},
+						"description": "Get the breakdown of the employees, rates and amounts billed by a company in an Invoice result using the ID.\nThis endpoint allows you to \"drill-down\" into the total amount charged by a company for a given invoice parsed.\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Company details from an Invalid invoice id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check that the status code for retrieving a company's details using an invalid invoice id is 400\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"pm.test(\"Check that the response time when retrieving a company's details using an invalid invoice id is less than 10000ms\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(10000);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/invoice/{{invalidInvoiceId}}/company?companyName={{company1}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoice",
+								"{{invalidInvoiceId}}",
+								"company"
+							],
+							"query": [
+								{
+									"key": "companyName",
+									"value": "{{company1}}",
+									"description": "(Required) companyName"
+								}
+							]
+						},
+						"description": "Get the breakdown of the employees, rates and amounts billed by a company in an Invoice result using the ID.\nThis endpoint allows you to \"drill-down\" into the total amount charged by a company for a given invoice parsed.\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Company details without a company name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check that the status code for retrieving a company's details without a company name is 400\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check that the response time when retrieving a company's details without a company name is less than 10000ms\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(10000);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/invoice/{{invalidInvoiceId}}/company?companyName=",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoice",
+								"{{invalidInvoiceId}}",
+								"company"
+							],
+							"query": [
+								{
+									"key": "companyName",
+									"value": "",
+									"description": "(Required) companyName"
+								}
+							]
+						},
+						"description": "Get the breakdown of the employees, rates and amounts billed by a company in an Invoice result using the ID.\nThis endpoint allows you to \"drill-down\" into the total amount charged by a company for a given invoice parsed.\n"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://csvdemomockappp.bundlewallet.com"
+		},
+		{
+			"key": "invoice_id",
+			"value": ""
+		},
+		{
+			"key": "invalidInvoiceId",
+			"value": "t"
+		},
+		{
+			"key": "validbase64 file",
+			"value": "RW1wbG95ZWUgSUQsQmlsbGFibGUgUmF0ZSAocGVyIGhvdXIpLFByb2plY3QsRGF0ZSxTdGFydCBUaW1lLEVuZCBUaW1lCjEsMzAwLEdvb2dsZSwyMDE5LTA3LTAxLDA5OjAwLDE3OjAwCjIsMTAwLEZhY2Vib29rLDIwMTktMDctMDEsMTE6MDAsMTY6MDA="
+		},
+		{
+			"key": "validBase64File2",
+			"value": "RW1wbG95ZWUgSUQsQmlsbGFibGUgUmF0ZSAocGVyIGhvdXIpLFByb2plY3QsRGF0ZSxTdGFydCBUaW1lLEVuZCBUaW1lCjEsMzAwLEdvb2dsZSwyMDE5LTA3LTAxLDk6MDAsMTc6MDAKMSwzMDAsQ0JOLDIwMTktMDctMDIsMTA6MDAsMTc6MDAKMiwxMDAsRmFjZWJvb2ssMjAxOS0wNy0wMSwxMTowMCwxNjowMAoyLDEwMCxGYWNlYm9vaywyMDE5LTA4LTAxLDEwOjAwLDE2OjAwCjIsMTAwLEZhY2Vib29rLDIwMTktMDktMDEsMTE6MDAsMTQ6MDAKMiwxMDAsRmFjZWJvb2ssMjAxOS0xMC0wMSwxMTowMCwxMzowMAozLDIwMCxGYWNlYm9vaywyMDE5LTEwLTAxLDExOjAwLDEzOjAwCg=="
+		},
+		{
+			"key": "company1",
+			"value": "Google"
+		},
+		{
+			"key": "company2",
+			"value": "Facebook"
+		},
+		{
+			"key": "company3",
+			"value": "CBN"
+		},
+		{
+			"key": "wrongly formatted base64 file",
+			"value": "RW1wbG95ZWUgSUQsQmlsbGFibGUgUmF0ZSAocGVyIGhvdXIpLFByb2plY3QsRGF0ZSxTdGFydCBUaW1lLEVuZCBUaW1lCjEsMzAwLEdvb2dsZSwyMDE5LTA3LTAxLDAuMzc1LDAuNzA4MzMzMzMzCjEsMzAwLENCTiwyMDE5LTA3LTAyLDAuNDE2NjY2NjY3LDAuNzA4MzMzMzMzCjIsMTAwLEZhY2Vib29rLDIwMTktMDctMDEsMC40NTgzMzMzMzMsMC42NjY2NjY2NjcKMiwxMDAsRmFjZWJvb2ssMjAxOS0wOC0wMSwwLjQxNjY2NjY2NywwLjY2NjY2NjY2NwoyLDEwMCxGYWNlYm9vaywyMDE5LTA5LTAxLDAuNDU4MzMzMzMzLDAuNTgzMzMzMzMzCjIsMTAwLEZhY2Vib29rLDIwMTktMTAtMDEsMC40NTgzMzMzMzMsMC41NDE2NjY2NjcKMywyMDAsRmFjZWJvb2ssMjAxOS0xMC0wMSwwLjQ1ODMzMzMzMywwLjU0MTY2NjY2Nwo="
+		},
+		{
+			"key": "invoice_id2",
+			"value": ""
+		},
+		{
+			"key": "invalidCompanyName",
+			"value": "G"
+		}
+	]
+}
