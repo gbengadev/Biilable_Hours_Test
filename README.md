@@ -5,24 +5,24 @@ API TESTS
 Prerequisites<br />
 -----------
 Install nodejs<br />
-install newman
-install htmlextra reporter
+install newman<br />
+install htmlextra reporter<br />
 
-Use the command below to install newman from nodejs command prompt
-$ npm install -g newman
-Use the command below to run the tests and generate an HTML report
-$ newman run {{postmancollectionfilename.json}} -r htmlextra --reporter-htmlextra-title "Billable App API Tests"
+Use the command below to install newman from nodejs command prompt<br />
+$ npm install -g newman<br />
+Use the command below to run the tests and generate an HTML report<br />
+$ newman run {{postmancollectionfilename.json}} -r htmlextra --reporter-htmlextra-title "Billable App API Tests"<br />
 
-MOBILE TESTS
+MOBILE TESTS<br />
 -------------
 
-Prerequisites
+Prerequisites<br />
 ------------
-install Appium server
-install Android SDK
-install java(version 8 or higher)
+install Appium server<br />
+install Android SDK<br />
+install java(version 8 or higher)<br />
 
-Set the desired capabilities for the application
-Start the Appium sever
-Launch the testNG.xml file from command prompt 
-java {{pathToTestNg.xmlFile}}
+Set the desired capabilities for the application<br />
+Start the Appium sever<br />
+Launch the testNG.xml file from command prompt <br />
+java {{pathToTestNg.xmlFile}}<br />
